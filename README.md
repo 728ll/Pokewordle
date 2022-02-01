@@ -55,7 +55,7 @@ Function pokesort_beta() '２回目以降のソート
             buf_num = Mid(Cells(i, 8), moji, 1)
             If buf_num = "0" Then
                 buf_moji = Mid(Cells(i, 7), moji, 1)
-                Call pts_change(moji, buf_moji, buf_num)
+                Call pts_change(moji, buf_moji, buf_num, i)
             End If
         Next
         
@@ -63,7 +63,7 @@ Function pokesort_beta() '２回目以降のソート
             buf_num = Mid(Cells(i, 8), moji, 1)
             If buf_num = "1" Then
                 buf_moji = Mid(Cells(i, 7), moji, 1)
-                Call pts_change(moji, buf_moji, buf_num)
+                Call pts_change(moji, buf_moji, buf_num, i)
             End If
         Next
         
@@ -78,28 +78,48 @@ Function pokesort_beta() '２回目以降のソート
     Call pokemax
 End Function
 
-Function pts_change(moji As Integer, buf_moji As String, buf_num As String) '結果に対する優先度の変更
+Function pts_change(moji As Integer, buf_moji As String, buf_num As String, y As Integer) '結果に対する優先度の変更
     
     Dim i As Integer
     Dim kaburi As String
+    Dim x As Integer
+    Dim chk As Integer
     
     
     Select Case buf_num
         Case "0" '一致なし
+        
+            For x = moji To 5
+                If Mid(Cells(y, 7), x, 1) = buf_moji And Mid(Cells(y, 8), x, 1) <> 0 Then
+                    chk = 1
+                Else
+                End If
+            Next
             For i = 1 To Cells(Rows.Count, 1).End(xlUp).Row
-                If InStr(Cells(i, 1), buf_moji) <> 0 Then
+                If InStr(Cells(i, 1), buf_moji) <> 0 And chk <> 1 Then
                     Cells(i, 2) = 0 '使われない文字を持っているポケモンは指数0
                 End If
             Next
+               
+            
         Call get_sisu
         
         Case "1"
             For i = 1 To Cells(Rows.Count, 1).End(xlUp).Row
-            
+                For x = 1 To 5
+                    If Mid(Cells(i, 1), x, 1) = buf_moji Then
+                        If Cells(i, 2) = 0 Then
+                        Else
+                            Cells(i, 2) = Cells(i, 2) + 250
+                        End If
+                    End If
+                Next
+                
                 kaburi = Mid(Cells(i, 1), moji, 1)
                 If kaburi = buf_moji Then
                     Cells(i, 2) = 0 '同じ場所に同じ文字があるポケモンの指数は0
                 End If
+                
             Next
         End Select
         
@@ -129,7 +149,7 @@ Function get_sisu() '評価指数
                     
                 Next
                 
-                Do
+                Do '被り文字の優先度を1文字分にする
                     str_chk = InStr(moji + 1, Cells(i, 1), Mid(Cells(i, 1), moji, 1))
                     If str_chk = 0 Then
                         Exit Do
@@ -160,7 +180,10 @@ Function max_sisu(buf_moji As String, moji As Integer) '一致文字を持つポ
     For i = 1 To Cells(Rows.Count, 2).End(xlUp).Row
                    
         If buf < Cells(i, 2) And Mid(Cells(i, 1), moji, 1) = buf_moji Then
-            Cells(i, 2) = Cells(i, 2) + 500
+            If Cells(i, 2) = 0 Then
+            Else
+                Cells(i, 2) = Cells(i, 2) + 500
+            End If
         End If
     Next
 End Function
