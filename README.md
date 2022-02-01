@@ -1,4 +1,4 @@
-# pokewordleSub pokeword()
+Sub pokeword()
     
     Application.EnableEvents = False
     Application.ScreenUpdating = False
@@ -22,7 +22,7 @@
     
 End Sub
 
-Function pokemax() '・ｽﾅ托ｿｽl・ｽ・ｽ・ｽ・ｽﾂポ・ｽP・ｽ・ｽ・ｽ・ｽ・ｽﾌ表・ｽ・ｽ
+Function pokemax() '最大値を持つポケモンの表示
     Dim i As Integer
     Dim buf As Integer
     Dim buf_cell As Integer
@@ -42,12 +42,12 @@ Function pokemax() '・ｽﾅ托ｿｽl・ｽ・ｽ・ｽ・ｽﾂポ・ｽP・�
         
 End Function
 
-Function pokesort_beta() '・ｽQ・ｽ・ｽﾚ以降・ｽﾌソ・ｽ[・ｽg
+Function pokesort_beta() '２回目以降のソート
 
     Dim i As Integer
-    Dim moji As Integer '・ｽ・ｽ・ｽ・ｽ・ｽ・ｽ・ｽ・ｽ
-    Dim buf_moji As String 'moji・ｽﾚのカ・ｽ^・ｽJ・ｽi
-    Dim buf_num As String 'moji・ｽﾚの鯉ｿｽ・ｽﾊの撰ｿｽ・ｽ・ｽ
+    Dim moji As Integer '何文字か
+    Dim buf_moji As String 'moji目のカタカナ
+    Dim buf_num As String 'moji目の結果の数字
 
     
     For i = 2 To Cells(Rows.Count, 7).End(xlUp).Row
@@ -78,17 +78,17 @@ Function pokesort_beta() '・ｽQ・ｽ・ｽﾚ以降・ｽﾌソ・ｽ[・ｽg
     Call pokemax
 End Function
 
-Function pts_change(moji As Integer, buf_moji As String, buf_num As String) '・ｽ・ｽ・ｽﾊに対ゑｿｽ・ｽ・ｽD・ｽ・ｽx・ｽﾌ変更
+Function pts_change(moji As Integer, buf_moji As String, buf_num As String) '結果に対する優先度の変更
     
     Dim i As Integer
     Dim kaburi As String
     
     
     Select Case buf_num
-        Case "0" '・ｽ・ｽv・ｽﾈゑｿｽ
+        Case "0" '一致なし
             For i = 1 To Cells(Rows.Count, 1).End(xlUp).Row
                 If InStr(Cells(i, 1), buf_moji) <> 0 Then
-                    Cells(i, 2) = 0 '・ｽg・ｽ・ｽ・ｽﾈゑｿｽ・ｽ・ｽ・ｽ・ｽ・ｽ・ｽ・ｽ・ｽ・ｽ・ｽﾄゑｿｽ・ｽ・ｽ|・ｽP・ｽ・ｽ・ｽ・ｽ・ｽﾍ指・ｽ・ｽ0
+                    Cells(i, 2) = 0 '使われない文字を持っているポケモンは指数0
                 End If
             Next
         Call get_sisu
@@ -98,13 +98,13 @@ Function pts_change(moji As Integer, buf_moji As String, buf_num As String) '・
             
                 kaburi = Mid(Cells(i, 1), moji, 1)
                 If kaburi = buf_moji Then
-                    Cells(i, 2) = 0 '・ｽ・ｽ・ｽ・ｽ・ｽ齒奇ｿｽﾉ難ｿｽ・ｽ・ｽ・ｽ・ｽ・ｽ・ｽ・ｽ・ｽ・ｽ・ｽ・ｽ・ｽ|・ｽP・ｽ・ｽ・ｽ・ｽ・ｽﾌ指・ｽ・ｽ・ｽ・ｽ0
+                    Cells(i, 2) = 0 '同じ場所に同じ文字があるポケモンの指数は0
                 End If
             Next
         End Select
         
 End Function
-Function get_sisu() '・ｽ]・ｽ・ｽ・ｽw・ｽ・ｽ
+Function get_sisu() '評価指数
     
     Dim i As Integer
     Dim x As Integer
@@ -117,9 +117,9 @@ Function get_sisu() '・ｽ]・ｽ・ｽ・ｽw・ｽ・ｽ
     cnt = 0
     For i = 1 To Cells(Rows.Count, 1).End(xlUp).Row
         cnt = 0
-        If Cells(i, 2) <> 0 Then '0・ｽﾉゑｿｽ・ｽ・ｽ・ｽ|・ｽP・ｽ・ｽ・ｽ・ｽ・ｽﾌ指・ｽ・ｽ・ｽﾍ変ゑｿｽ・ｽﾈゑｿｽ
+        If Cells(i, 2) <> 0 Then '0にしたポケモンの指数は変えない
         
-            Cells(i, 2) = 1 '・ｽw・ｽ・ｽ・ｽ・ｽ・ｽZ・ｽb・ｽg
+            Cells(i, 2) = 1 '指数リセット
             For moji = 1 To 5
                 chk = Mid(Cells(i, 1), moji, 1)
                 For x = 1 To Cells(Rows.Count, 3).End(xlUp).Row
@@ -150,7 +150,7 @@ Function get_sisu() '・ｽ]・ｽ・ｽ・ｽw・ｽ・ｽ
         
 End Function
 
-Function max_sisu(buf_moji As String, moji As Integer) '・ｽ・ｽv・ｽ・ｽ・ｽ・ｽ・ｽ・ｽ・ｽ・ｽﾂポ・ｽP・ｽ・ｽ・ｽ・ｽ・ｽﾌ指・ｽ・ｽ・ｽ繧ｰ
+Function max_sisu(buf_moji As String, moji As Integer) '一致文字を持つポケモンの指数上げ
 
     Dim i As Integer
     Dim buf As Integer
@@ -184,7 +184,7 @@ Sub reset()
     Application.ScreenUpdating = True
 End Sub
 
-Function mojiPts() '・ｽ・ｽ・ｽ・ｽ・ｽ・ｽ・ｽﾉ対ゑｿｽ・ｽ・ｽD・ｽ・ｽx・ｽt
+Function mojiPts() '文字数に対する優先度付
     Dim i As Integer
     Dim cnt As Integer
     Dim buf As Integer
@@ -194,12 +194,12 @@ Function mojiPts() '・ｽ・ｽ・ｽ・ｽ・ｽ・ｽ・ｽﾉ対ゑｿｽ・
     
     For i = Cells(Rows.Count, 4).End(xlUp).Row To 1 Step -1
     
-        If Cells(i, 4) > buf Then '・ｽP・ｽﾂ会ｿｽ・ｽﾌ包ｿｽ・ｽ・ｽ・ｽ・ｽ・ｽg・ｽp・ｽ・ｽ・ｽ・ｽ・ｽ・ｽ・ｽ・ｽ・ｽ鼾・
+        If Cells(i, 4) > buf Then '１つ下の文字より使用数が多い場合
             cnt = cnt + 1
             Cells(i, 5) = cnt
             buf = Cells(i, 4)
             
-        ElseIf Cells(i, 4) = buf Then '・ｽP・ｽﾂ会ｿｽ・ｽﾌ包ｿｽ・ｽ・ｽ・ｽﾆ使・ｽp・ｽ・ｽ・ｽ・ｽ・ｽ・ｽ・ｽ・ｽ・ｽ鼾・
+        ElseIf Cells(i, 4) = buf Then '１つ下の文字と使用数が同じ場合
             Cells(i, 5) = cnt
             buf = Cells(i, 4)
             
@@ -213,7 +213,7 @@ Function mojiPts() '・ｽ・ｽ・ｽ・ｽ・ｽ・ｽ・ｽﾉ対ゑｿｽ・
     
 End Function
 
-Function sisu_reset() '・ｽ]・ｽ・ｽ・ｽw・ｽ・ｽ
+Function sisu_reset() '評価指数
     
     Dim i As Integer
     Dim x As Integer
@@ -222,7 +222,7 @@ Function sisu_reset() '・ｽ]・ｽ・ｽ・ｽw・ｽ・ｽ
     
         
     For i = 1 To Cells(Rows.Count, 1).End(xlUp).Row
-        Cells(i, 2) = 0 '・ｽw・ｽ・ｽ・ｽ・ｽ・ｽZ・ｽb・ｽg
+        Cells(i, 2) = 0 '指数リセット
         For moji = 1 To 5
             For x = 1 To Cells(Rows.Count, 3).End(xlUp).Row
                 If Mid(Cells(i, 1), moji, 1) = Cells(x, 3) Then
@@ -241,14 +241,14 @@ Function errorchk()
     
     For i = 2 To Cells(Rows.Count, 7).End(xlUp).Row
         If Len(Cells(i, 8)) <> 5 Then
-            MsgBox ("5・ｽ・ｽ・ｽ・ｽ・ｽﾌ撰ｿｽ・ｽl・ｽﾅ難ｿｽ・ｽﾍゑｿｽ・ｽﾄゑｿｽ・ｽ・ｽ・ｽ・ｽ・ｽ・ｽ")
+            MsgBox ("5文字の数値で入力してください")
             End
         End If
         For x = 1 To 5
             If Mid(Cells(i, 8), x, 1) >= 0 And Mid(Cells(i, 8), x, 1) <= 2 Then
             
             Else
-                MsgBox ("0・ｽ・ｽ・ｽ・ｽ2・ｽﾌ撰ｿｽ・ｽl・ｽﾅ難ｿｽ・ｽﾍゑｿｽ・ｽﾄゑｿｽ・ｽ・ｽ・ｽ・ｽ・ｽ・ｽ")
+                MsgBox ("0から2の数値で入力してください")
                 End
             End If
         Next
